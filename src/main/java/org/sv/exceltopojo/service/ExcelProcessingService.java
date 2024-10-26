@@ -74,8 +74,8 @@ public class ExcelProcessingService {
                 pojoList.add(pojoInstance);
             }
         } catch (Exception e) {
-            logger.error("An error occurred while processing the Excel file.", e);
-            throw new RuntimeException("Failed to process the Excel file", e);
+            logger.error("An error occurred while processing the Excel file:", e);
+            throw new RuntimeException("Failed to process the Excel file: " + e.getMessage(), e);
         }
         return pojoList;
     }
