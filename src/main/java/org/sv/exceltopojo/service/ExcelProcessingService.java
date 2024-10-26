@@ -3,6 +3,8 @@ package org.sv.exceltopojo.service;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.sv.exceltopojo.config.ExcelToPojoMapping;
@@ -17,6 +19,7 @@ public class ExcelProcessingService {
 
     private final PojoClassProvider pojoClassProvider;
     private final ExcelToPojoMapping mapping;
+    private static final Logger logger = LoggerFactory.getLogger(ExcelProcessingService.class);
 
     public ExcelProcessingService(PojoClassProvider pojoClassProvider, ExcelToPojoMapping mapping) {
         this.pojoClassProvider = pojoClassProvider;
@@ -29,12 +32,13 @@ public class ExcelProcessingService {
 
         try (InputStream is = file.getInputStream()) {
             Workbook workbook;
-            if (file.getOriginalFilename().endsWith(".xlsx")) {
+            String fileName = file.getOriginalFilename();
+            if (fileName != null && fileName.endsWith(".xlsx")) {
                 workbook = new XSSFWorkbook(is);
-            } else if (file.getOriginalFilename().endsWith(".xls")) {
+            } else if (fileName != null && file.getOriginalFilename().endsWith(".xls")) {
                 workbook = new HSSFWorkbook(is);
             } else {
-                throw new IllegalArgumentException("The file is not an Excel file");
+                throw new IllegalArgumentException("Invalid file type. Only .xls and .xlsx files are supported.");
             }
 
             Sheet sheet = workbook.getSheetAt(0);
@@ -70,9 +74,8 @@ public class ExcelProcessingService {
                 pojoList.add(pojoInstance);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            //TODO Handle exceptions appropriately
-            throw new RuntimeException(e);
+            logger.error("An error occurred while processing the Excel file.", e);
+            throw new RuntimeException("Failed to process the Excel file", e);
         }
         return pojoList;
     }
