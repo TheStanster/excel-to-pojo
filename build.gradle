@@ -19,6 +19,20 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Apache POI for Excel processing
+    implementation 'org.apache.poi:poi:5.3.0' // For basic Excel formats (.xls)
+    implementation 'org.apache.poi:poi-ooxml:5.3.0'
+
+    // Lombok (optional, for reducing boilerplate code)
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    // Springdoc OpenAPI for Swagger support
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
